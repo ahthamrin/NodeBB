@@ -1,6 +1,7 @@
 'use strict';
 
 var	async = require('async'),
+	_ = require('underscore'),
 
 	user = require('../user'),
 	db = require('./../database');
@@ -22,8 +23,24 @@ module.exports = function(Groups) {
 				Groups.getGroupsData(groupNames, next);
 			},
 			function(groupsData, next) {
+				if (options.uid) {
+					var groupNames = groupsdata.map(function(group) {
+						return group.name;
+					});
+					Groups.isMemberOfGroups(options.uid, groupNames, function(err, gm) {
+						_.each(groupsData, function(gd,idx) {
+							gd.uidIsMember = gm[idx];
+						});
+						next(null, groupsData);
+					});
+				}
+				else {
+					next(null, groupsData);
+				}
+			},
+			function(groupsData, next) {
 				groupsData = groupsData.filter(function(group) {
-					return group && !group.hidden;
+					return group && (!group.hidden || group.uidIsMember);
 				});
 				groupsData.forEach(Groups.escapeGroupData);
 				next(null, groupsData);

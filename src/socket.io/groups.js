@@ -221,7 +221,10 @@ SocketGroups.search = function(socket, data, callback) {
 		return;
 	}
 
-	groups.search(data.query, data.options || {}, callback);
+	data.options = data.options || {};
+	data.options.uid = socket.uid;
+	
+	groups.search(data.query, data.options, callback);
 };
 
 SocketGroups.loadMore = function(socket, data, callback) {
