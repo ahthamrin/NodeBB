@@ -24,7 +24,7 @@ module.exports = function(Groups) {
 			},
 			function(groupsData, next) {
 				if (options.uid) {
-					var groupNames = groupsdata.map(function(group) {
+					var groupNames = groupsData.map(function(group) {
 						return group.name;
 					});
 					Groups.isMemberOfGroups(options.uid, groupNames, function(err, gm) {
